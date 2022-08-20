@@ -1,10 +1,15 @@
+using CharacterPlanner.DependencyInjection;
+
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddHttpClient();
 builder.Services.AddControllersWithViews();
 builder.Services.AddSpaStaticFiles(config =>
 {
     config.RootPath = "ClientApp/dist";
 });
+builder.Services.AddApplicationServices();
+builder.Services.AddInfrastructureServices();
 
 var app = builder.Build();
 
