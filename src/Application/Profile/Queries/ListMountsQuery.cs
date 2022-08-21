@@ -1,3 +1,4 @@
+using System.Net.Http.Headers;
 using CharacterPlanner.Application.Common.Interfaces;
 using MediatR;
 
@@ -9,12 +10,12 @@ public class ListMountsQuery : IRequest<string>
 
 public class ListMountsQueryHandler : IRequestHandler<ListMountsQuery, string>
 {
-    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly HttpClient _httpClient;
     private readonly IBnetTokenService _bnetTokenService;
 
     public ListMountsQueryHandler(IHttpClientFactory httpClientFactory, IBnetTokenService bnetTokenService)
     {
-        _httpClientFactory = httpClientFactory;
+        _httpClient = httpClientFactory.CreateClient();
         _bnetTokenService = bnetTokenService;
     }
 
@@ -23,6 +24,8 @@ public class ListMountsQueryHandler : IRequestHandler<ListMountsQuery, string>
         var region = "us"; // todo: allow other regions
         var locale = "en_US";
 
+        var token = await _bnetTokenService.GetToken();
+
         var builder = new UriBuilder($"https://{region}.api.blizzard.com");
         builder.Path = "/data/wow/mount/index";
         builder.Query = $"locale={locale}";
@@ -30,13 +33,12 @@ public class ListMountsQueryHandler : IRequestHandler<ListMountsQuery, string>
         {
             Headers =
             {
-                { "Battlenet-Namespace", $"static-{region}" },
-                { "Bearer", _bnetTokenService.GetToken() }
+                { "Battlenet-Namespace", $"static-{region}" }
             }
         };
+        httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        var httpClient = _httpClientFactory.CreateClient();
-        var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
+        var httpResponseMessage = await _httpClient.SendAsync(httpRequestMessage);
 
         var content = await httpResponseMessage.Content.ReadAsStringAsync();
 

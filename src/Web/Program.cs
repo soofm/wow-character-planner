@@ -1,6 +1,9 @@
 using CharacterPlanner.DependencyInjection;
+using CharacterPlanner.Domain.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<BnetCredentials>(builder.Configuration.GetSection("BattlenetApi"));
 
 builder.Services.AddHttpClient();
 builder.Services.AddControllersWithViews();
