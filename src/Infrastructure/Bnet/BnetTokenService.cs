@@ -13,9 +13,10 @@ public class BnetTokenService : IBnetTokenService
 {
     private readonly HttpClient _httpClient;
     private readonly IMemoryCache _memoryCache;
+    private const string _tokenCacheKey = "client_token";
 
     public BnetTokenService(
-        IOptions<BnetCredentials> credentials,
+        IOptions<ClientCredentials> credentials,
         IHttpClientFactory httpClientFactory,
         IMemoryCache memoryCache)
     {
@@ -26,7 +27,13 @@ public class BnetTokenService : IBnetTokenService
     }
 
     public async Task<string> GetToken()
-    {        
+    {
+        var isCached = _memoryCache.TryGetValue<string>(_tokenCacheKey, out var clientToken);
+        if (isCached)
+        {
+            return clientToken;
+        }
+
         var builder = new UriBuilder($"https://us.battle.net");
         builder.Path = "/oauth/token";
         var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, builder.Uri);
@@ -34,7 +41,6 @@ public class BnetTokenService : IBnetTokenService
         {
             new("grant_type", "client_credentials")
         });
-        
         httpRequestMessage.Content = reqContent;
 
         var httpResponseMessage = await _httpClient.SendAsync(httpRequestMessage);
@@ -44,13 +50,14 @@ public class BnetTokenService : IBnetTokenService
             throw new Exception("Failed to get token");
         }
 
-        // TODO cache or use OAuth library
-        var resContent = await httpResponseMessage.Content.ReadFromJsonAsync<BnetToken>(new JsonSerializerOptions());
+        var resContent = await httpResponseMessage.Content.ReadFromJsonAsync<TokenResponse>(new JsonSerializerOptions());
 
         if (resContent == null)
         {
             throw new Exception("Failed to parse token");
         }
+
+        _memoryCache.Set<string>(_tokenCacheKey, resContent.AccessToken!, TimeSpan.FromSeconds(Math.Max(resContent.ExpiresIn - 60, 0)));
 
         return resContent.AccessToken!;
     }

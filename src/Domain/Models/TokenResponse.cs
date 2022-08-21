@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace CharacterPlanner.Domain.Models;
 
-public class BnetToken
+public class TokenResponse
 {
     [JsonPropertyName("access_token")]
     public string? AccessToken { get; set; }

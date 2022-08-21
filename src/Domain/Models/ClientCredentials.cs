@@ -1,6 +1,7 @@
 ﻿namespace CharacterPlanner.Domain.Models;
-public class BnetCredentials
+public class ClientCredentials
 {
     public string? ClientId { get; set; }
     public string? ClientSecret { get; set; }
+    public string? RedirectUri { get; set; }
 }
