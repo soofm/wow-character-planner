@@ -23,3 +23,12 @@ This is an app to allow users to import their character, view their current coll
   - Create a profile page
 - Create authentication for user logins
 
+# Character Details
+- is it a already created Character?
+* what do we plan to do with the character
+* What are we looking to achive
+
+- is it a newly created character?
+* How do we plan to create the character
+* what do we plan to do with the character
+* What are we looking to achive
