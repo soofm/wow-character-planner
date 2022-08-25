@@ -1,5 +1,6 @@
 using CharacterPlanner.DependencyInjection;
 using CharacterPlanner.Domain.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,11 +28,10 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseSpaStaticFiles();
 app.UseRouting();
-
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
-
+app.UseAuthentication();
 app.MapFallbackToFile("index.html");
 
 app.Run();
