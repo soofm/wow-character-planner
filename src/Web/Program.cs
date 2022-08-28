@@ -1,6 +1,5 @@
 using CharacterPlanner.DependencyInjection;
 using CharacterPlanner.Domain.Models;
-using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +12,17 @@ builder.Services.AddSpaStaticFiles(config =>
     config.RootPath = "ClientApp/dist";
 });
 builder.Services.AddApplicationServices();
-builder.Services.AddInfrastructureServices();
+builder.Services.AddInfrastructureServices(builder.Configuration);
+var  MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5173");
+            policy.WithHeaders("X-CSRF");
+        });
+});
 
 var app = builder.Build();
 
@@ -27,11 +36,22 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseSpaStaticFiles();
+
 app.UseRouting();
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller}/{action=Index}/{id?}");
+
+app.UseCors(MyAllowSpecificOrigins);
+
 app.UseAuthentication();
+app.UseBff();
+app.UseAuthorization();
+
+app.UseEndpoints(endpoints =>
+{
+    app.MapControllerRoute(
+        name: "default",
+        pattern: "{controller}/{action=Index}/{id?}");
+});
+
 app.MapFallbackToFile("index.html");
 
 app.Run();
