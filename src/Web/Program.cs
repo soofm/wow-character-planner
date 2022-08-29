@@ -42,7 +42,6 @@ app.UseRouting();
 app.UseCors(MyAllowSpecificOrigins);
 
 app.UseAuthentication();
-app.UseBff();
 app.UseAuthorization();
 
 app.UseEndpoints(endpoints =>
