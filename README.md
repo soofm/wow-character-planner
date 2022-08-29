@@ -9,6 +9,9 @@ This is an app to allow users to import their character, view their current coll
 
 ## Building and Running
 
+### First time setup
+- cd src/Web/ClientApp && npm i && cd ../../..
+
 - dotnet run --project src/Web
 
 ## Tasks
