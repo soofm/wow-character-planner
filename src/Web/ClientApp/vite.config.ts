@@ -11,7 +11,7 @@ export default defineConfig({
   server: {
     strictPort: true,
     proxy: {
-      '/api': { target: 'https://localhost:5001', secure: false }
+      '/api': { target: 'https://localhost:7242', secure: false }
     },
     hmr: {
       protocol: 'ws'

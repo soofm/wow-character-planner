@@ -24,7 +24,7 @@ public class ListMountsQueryHandler : IRequestHandler<ListMountsQuery, string>
         var region = "us"; // todo: allow other regions
         var locale = "en_US";
 
-        var token = await _bnetTokenService.GetToken();
+        var token = await _bnetTokenService.GetClientCredentialsToken();
 
         var builder = new UriBuilder($"https://{region}.api.blizzard.com");
         builder.Path = "/data/wow/mount/index";

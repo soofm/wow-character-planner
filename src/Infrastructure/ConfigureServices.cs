@@ -9,7 +9,7 @@ public static class ConfigureServices
 {
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddSingleton<IBnetTokenService, BnetTokenService>();
+        services.AddScoped<IBnetTokenService, BnetTokenService>();
         return services;
     }
 }

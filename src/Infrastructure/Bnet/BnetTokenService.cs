@@ -1,9 +1,6 @@
-using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using System.Text;
-using System.Text.Json;
 using CharacterPlanner.Application.Common.Interfaces;
 using CharacterPlanner.Domain.Models;
+using IdentityModel.Client;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 
@@ -13,20 +10,20 @@ public class BnetTokenService : IBnetTokenService
 {
     private readonly HttpClient _httpClient;
     private readonly IMemoryCache _memoryCache;
+    private readonly ClientCredentials _clientCredentials;
     private const string _tokenCacheKey = "client_token";
 
     public BnetTokenService(
-        IOptions<ClientCredentials> credentials,
         IHttpClientFactory httpClientFactory,
-        IMemoryCache memoryCache)
+        IMemoryCache memoryCache,
+        IOptions<ClientCredentials> credentials)
     {
         _httpClient = httpClientFactory.CreateClient();
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",
-            Convert.ToBase64String(Encoding.UTF8.GetBytes($"{credentials.Value.ClientId}:{credentials.Value.ClientSecret}")));
         _memoryCache = memoryCache;
+        _clientCredentials = credentials.Value;
     }
 
-    public async Task<string> GetToken()
+    public async Task<string> GetClientCredentialsToken()
     {
         var isCached = _memoryCache.TryGetValue<string>(_tokenCacheKey, out var clientToken);
         if (isCached)
@@ -34,31 +31,54 @@ public class BnetTokenService : IBnetTokenService
             return clientToken;
         }
 
-        var builder = new UriBuilder($"https://us.battle.net");
-        builder.Path = "/oauth/token";
-        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, builder.Uri);
-        var reqContent = new FormUrlEncodedContent(new KeyValuePair<string, string>[]
+        var uri = new Uri($"https://us.battle.net/oauth/token");
+        
+        var tokenResponse = await _httpClient.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
         {
-            new("grant_type", "client_credentials")
+            Address = uri.ToString(),
+            ClientId = _clientCredentials.ClientId,
+            ClientSecret = _clientCredentials.ClientSecret
         });
-        httpRequestMessage.Content = reqContent;
 
-        var httpResponseMessage = await _httpClient.SendAsync(httpRequestMessage);
-
-        if (!httpResponseMessage.IsSuccessStatusCode)
+        if (tokenResponse.IsError)
         {
-            throw new Exception("Failed to get token");
+            throw new Exception("Error getting token");
         }
 
-        var resContent = await httpResponseMessage.Content.ReadFromJsonAsync<TokenResponse>(new JsonSerializerOptions());
+        _memoryCache.Set<string>(_tokenCacheKey, tokenResponse.AccessToken, TimeSpan.FromSeconds(Math.Max(tokenResponse.ExpiresIn - 60, 0)));
 
-        if (resContent == null)
+        return tokenResponse.AccessToken;
+    }
+
+    public async Task<string> GetAuthorizationCodeToken(string userId)
+    {
+        var isCached = _memoryCache.TryGetValue<string>($"user:{userId}", out var authToken);
+        if (isCached)
         {
-            throw new Exception("Failed to parse token");
+            return authToken;
         }
 
-        _memoryCache.Set<string>(_tokenCacheKey, resContent.AccessToken!, TimeSpan.FromSeconds(Math.Max(resContent.ExpiresIn - 60, 0)));
+        var uri = new Uri($"https://us.battle.net/oauth/token");
 
-        return resContent.AccessToken!;
+        var tokenResponse = await _httpClient.RequestAuthorizationCodeTokenAsync(new AuthorizationCodeTokenRequest
+        {
+            Address = uri.ToString(),
+            ClientId = _clientCredentials.ClientId,
+            ClientSecret = _clientCredentials.ClientSecret,
+            Parameters =
+            {
+                { "scope", "wow.profile" }
+            }
+        });
+
+        if (tokenResponse.IsError)
+        {
+            throw new Exception("Error getting token");
+        }
+
+        _memoryCache.Set<string>($"user:{userId}", tokenResponse.AccessToken, TimeSpan.FromSeconds(Math.Max(tokenResponse.ExpiresIn - 60, 0)));
+
+
+        return tokenResponse.AccessToken;
     }
 }
