@@ -5,11 +5,11 @@ VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{BBF25D38-F7E3-45D5-9F3D-AEF9D604CC29}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "src/Client/CharacterPlanner.Client.csproj", "{1747BAEB-01F2-41F6-BA4E-EE6665C15986}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CharacterPlanner.Client", "src\Client\CharacterPlanner.Client.csproj", "{1747BAEB-01F2-41F6-BA4E-EE6665C15986}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "src/Server/CharacterPlanner.Server.csproj", "{7A2EADCF-FF33-4F44-A510-D7C8067D8B50}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CharacterPlanner.Server", "src\Server\CharacterPlanner.Server.csproj", "{7A2EADCF-FF33-4F44-A510-D7C8067D8B50}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "src/Shared/CharacterPlanner.Shared.csproj", "{082358A3-84D9-4B0B-9444-C80C6B2AB37E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CharacterPlanner.Shared", "src\Shared\CharacterPlanner.Shared.csproj", "{23BA3185-C1AA-434B-B7E2-8A793A239BC4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -28,14 +28,14 @@ Global
 		{7A2EADCF-FF33-4F44-A510-D7C8067D8B50}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A2EADCF-FF33-4F44-A510-D7C8067D8B50}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A2EADCF-FF33-4F44-A510-D7C8067D8B50}.Release|Any CPU.Build.0 = Release|Any CPU
-		{082358A3-84D9-4B0B-9444-C80C6B2AB37E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{082358A3-84D9-4B0B-9444-C80C6B2AB37E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{082358A3-84D9-4B0B-9444-C80C6B2AB37E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{082358A3-84D9-4B0B-9444-C80C6B2AB37E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23BA3185-C1AA-434B-B7E2-8A793A239BC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23BA3185-C1AA-434B-B7E2-8A793A239BC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23BA3185-C1AA-434B-B7E2-8A793A239BC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23BA3185-C1AA-434B-B7E2-8A793A239BC4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{1747BAEB-01F2-41F6-BA4E-EE6665C15986} = {BBF25D38-F7E3-45D5-9F3D-AEF9D604CC29}
 		{7A2EADCF-FF33-4F44-A510-D7C8067D8B50} = {BBF25D38-F7E3-45D5-9F3D-AEF9D604CC29}
-		{082358A3-84D9-4B0B-9444-C80C6B2AB37E} = {BBF25D38-F7E3-45D5-9F3D-AEF9D604CC29}
+		{23BA3185-C1AA-434B-B7E2-8A793A239BC4} = {BBF25D38-F7E3-45D5-9F3D-AEF9D604CC29}
 	EndGlobalSection
 EndGlobal

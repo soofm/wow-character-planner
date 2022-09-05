@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.ResponseCompression;
-using CharacterPlanner.Server.Infrastructure;
+using CharacterPlanner.Server.Services;
 using CharacterPlanner.Shared.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,8 +33,16 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
+app.UseBff();
+app.UseAuthorization();
+
+app.MapBffManagementEndpoints();
+
 app.MapRazorPages();
-app.MapControllers();
+app.MapControllers()
+    .RequireAuthorization()
+    .AsBffApiEndpoint();
 app.MapFallbackToFile("index.html");
 
 app.Run();

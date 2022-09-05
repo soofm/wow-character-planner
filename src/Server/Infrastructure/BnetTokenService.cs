@@ -4,7 +4,7 @@ using IdentityModel.Client;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 
-namespace CharacterPlanner.Server.Infrastructure;
+namespace CharacterPlanner.Server.Services;
 
 public class BnetTokenService : IBnetTokenService
 {
