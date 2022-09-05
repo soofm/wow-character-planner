@@ -5,7 +5,7 @@
             "label": "build",
             "type": "process",
             "command": "dotnet",
-            "args": ["build", "${workspaceFolder}/src/Web"],
+            "args": ["build", "${workspaceFolder}/src/Server"],
             "isBuildCommand": true,
             "problemMatcher": "$msCompile"
         }
